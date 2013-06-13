@@ -13,23 +13,20 @@ define(function(require, exports, module) {
 		if (!node || node.type() != 'unordered') return;
 		var children = node.children();
 		if (children.length > 0) {
-			var tags = ['estimate', 'actual'];
-			for (var i = 0; i < tags.length; i++) {
-				var sum = sumTag(children, tags[i]);
+			_.each(['estimate', 'actual'], function(tag) {
+				var sum = sumTag(children, tag);
 				if (sum > 0) {
-					node.addTag(tags[i], sum);
+					node.addTag(tag, sum);
 				}
 				else {
-					node.removeTag(tags[i]);
+					node.removeTag(tag);
 				}
-			}
+			});
 		}
 	}
 
 	function sumTag(nodes, tag) {
-		var sum = 0;
-		for (var i = 0; i < nodes.length; i++) sum += parseFloat(nodes[i].tag(tag)) || 0;
-		return sum;
+		return _.reduce(nodes, function(sum, node) { return sum + parseFloat(node.tag(tag)) || 0 }, 0);
 	}
 
 	exports.editorDidLoad = function(editor) {
