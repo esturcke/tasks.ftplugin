@@ -15,12 +15,7 @@ define(function(require, exports, module) {
 		if (children.length > 0) {
 			_.each(['estimate', 'actual'], function(tag) {
 				var sum = sumTag(children, tag);
-				if (sum > 0) {
-					node.addTag(tag, sum);
-				}
-				else {
-					node.removeTag(tag);
-				}
+				sum > 0 ? node.addTag(tag, sum) : node.removeTag(tag);
 			});
 		}
 	}
