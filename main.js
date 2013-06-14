@@ -13,7 +13,7 @@ define(function(require, exports, module) {
 		if (!node || node.type() != 'unordered') return;
 		var children = node.children();
 		if (children.length > 0) {
-			_.each(['estimate', 'actual'], function(tag) {
+			_.each(['actual', 'estimate'], function(tag) {
 				var sum = sumTag(children, tag);
 				sum > 0 ? node.addTag(tag, sum) : node.removeTag(tag);
 			});
