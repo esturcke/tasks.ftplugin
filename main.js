@@ -19,7 +19,7 @@ define(function(require, exports, module) {
 		// handle remaining calculation
 		var estimate = getNum(node, 'estimate');
 		var actual   = getNum(node, 'actual');
-		var progress = node.tag('done') ? 1 : getNum(node, 'progress') / 100;
+		var progress = node.tag('done') === "" ? 1 : getNum(node, 'progress') / 100;
 		var remaining = progress > 0 ? Math.round( 10 * actual * (1 - progress) / progress ) / 10 : 0;
 		if (remaining != getNum(node, 'remaining')) {
 			remaining > 0 ? node.addTag('remaining', remaining) : node.removeTag('remaining');
@@ -34,7 +34,10 @@ define(function(require, exports, module) {
 				sum > 0 ? node.addTag(tag, sum) : node.removeTag(tag);
 			});
 
-			var progress = Math.round(averageTag(children, 'progress', 'estimate'));
+			var weightSum = sumTag(children, 'estimate');
+			var progress  = weightSum > 0 ? _.reduce(children, function(sum, node) {
+				return sum + getNum(node, 'estimate') * (node.tag('done') === "" ? 100 : getNum(node, 'progress'))
+			}, 0) / weightSum : 0;
 			progress > 0 ? node.addTag('progress', progress + '%') : node.removeTag('progress');
 		}
 	}
@@ -44,8 +47,6 @@ define(function(require, exports, module) {
 	}
 
 	function averageTag(nodes, tag, weight) {
-		var weightSum = sumTag(nodes, weight);
-		return weightSum > 0 ? _.reduce(nodes, function(sum, node) { return sum + getNum(node, weight) * getNum(node, tag) }, 0) / weightSum : 0;
 	}
 
 	exports.editorDidLoad = function(editor) {
