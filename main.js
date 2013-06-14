@@ -21,7 +21,7 @@ define(function(require, exports, module) {
 	}
 
 	function sumTag(nodes, tag) {
-		return _.reduce(nodes, function(sum, node) { return sum + parseFloat(node.tag(tag)) || 0 }, 0);
+		return _.reduce(nodes, function(sum, node) { return sum + (parseFloat(node.tag(tag)) || 0) }, 0);
 	}
 
 	exports.editorDidLoad = function(editor) {
