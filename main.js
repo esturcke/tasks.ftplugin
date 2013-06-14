@@ -20,8 +20,10 @@ define(function(require, exports, module) {
 		var estimate = getNum(node, 'estimate');
 		var actual   = getNum(node, 'actual');
 		var progress = node.tag('done') ? 1 : getNum(node, 'progress') / 100;
-		var remaining = progress > 0 ? Math.round( 10 * actual * (1 - progress) / progress ) / 10 : estimate;
-		remaining > 0 ? node.addTag('remaining', remaining) : node.removeTag('remaining');
+		var remaining = progress > 0 ? Math.round( 10 * actual * (1 - progress) / progress ) / 10 : 0;
+		if (remaining != getNum(node, 'remaining')) {
+			remaining > 0 ? node.addTag('remaining', remaining) : node.removeTag('remaining');
+		}
 
 		node = node.parent;
 		if (!node || node.type() != 'unordered') return;
