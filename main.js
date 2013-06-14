@@ -1,11 +1,14 @@
 define(function(require, exports, module) {
+	var model;
+
 	function update(e) {
 		var inserts = e.insertedByMode('todo');
 		var updates = e.updatedByMode('todo');
 		var removes = e.removedByMode('todo');
 		var nodes = inserts.unionSet(updates).unionSet(removes);
-
+		model.beginUpdates();
 		nodes.forEachNodeInSet(updateNode);
+		model.endUpdates();
 	}
 
 	function updateNode(node) {
@@ -25,6 +28,7 @@ define(function(require, exports, module) {
 	}
 
 	exports.editorDidLoad = function(editor) {
-		editor.treeController.treeModel.addEventListener('treeChanged', update);
+		model = editor.treeController.treeModel;
+		model.addEventListener('treeChanged', update);
 	};
 });
