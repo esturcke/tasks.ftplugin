@@ -16,7 +16,7 @@ define(function(require, exports, module) {
 	}
 
 	function getNumWithFallback(node, tag, fallbackTag) {
-		return parseFloat(node.tag(tag)) || parseFload(node.tag(fallbackTag)) || 0;
+		return parseFloat(node.tag(tag)) || parseFloat(node.tag(fallbackTag)) || 0;
 	}
 
 	function updateNode(node) {
@@ -38,9 +38,9 @@ define(function(require, exports, module) {
 				sum > 0 ? node.addTag(tag, sum) : node.removeTag(tag);
 			});
 
-			var weightSum = sumTag(children, 'actual') + sumTag(children, 'remaining');
+			var weightSum = sumTag(children, 'actual') + sumTagWithFallback(children, 'remaining', 'estimate');
 			var progress  = weightSum > 0 ? _.reduce(children, function(sum, node) {
-				return sum + (getNum(node, 'actual') + getNum(node, 'remaining')) * (node.tag('done') === "" ? 100 : getNum(node, 'progress'))
+				return sum + (getNum(node, 'actual') + getNumWithFallback(node, 'remaining', 'estimate')) * (node.tag('done') === "" ? 100 : getNum(node, 'progress'))
 			}, 0) / weightSum : 0;
 			progress > 0 ? node.addTag('progress', Math.round(progress * 10) / 10 + '%') : node.removeTag('progress');
 		}
